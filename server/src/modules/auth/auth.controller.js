@@ -19,7 +19,15 @@ export const authController = {
 			const newUser =
 				await authService.register(user);
 
-			return res.status(201).json(newUser);
+			req.logIn(newUser, (err) => {
+				if (err) {
+					return next(err);
+				}
+				return res.json({
+					message: "Registration successful",
+					user: newUser,
+				});
+			});
 		} catch (error) {
 			throw new Error(error);
 		}

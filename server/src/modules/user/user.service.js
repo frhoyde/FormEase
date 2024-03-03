@@ -1,8 +1,8 @@
 export const userService = {
-	getUserById: async (id) => {
+	getUserByEmail: async (email) => {
 		const user =
 			await databaseClient.user.findUnique({
-				where: { id },
+				where: { email },
 			});
 		return user;
 	},
