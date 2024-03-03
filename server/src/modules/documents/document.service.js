@@ -1,20 +1,124 @@
+import { databaseClient } from "../../database/index.js";
 export const documentService = {
-	createOneDocument: (document) => {
-		return { message: "Document created." };
+	createOneDocument: async (document) => {
+		const newDocument =
+			await databaseClient.document.create({
+				data: {
+					name: document.name,
+					categories: {
+						connectOrCreate:
+							document.categories.map(
+								(category) => ({
+									where: { name: category.id },
+									create: { name: category.name },
+								})
+							),
+					},
+					tags: {
+						connectOrCreate: document.tags.map(
+							(tag) => ({
+								where: { name: tag.id },
+								create: { name: tag.name },
+							})
+						),
+					},
+
+					formFieldValues: {
+						create: document.formFieldValues.map(
+							(fieldValue) => ({
+								connect: {
+									formFieldLabel:
+										fieldValue.formFieldId,
+								},
+								value: fieldValue.value,
+							})
+						),
+					},
+				},
+			});
+
+		return newDocument;
 	},
-	getDocumentById: (id) => {
-		return { message: "Document retrieved." };
+	getDocumentById: async (id) => {
+		const document =
+			await databaseClient.document.findUnique({
+				where: { id },
+				include: {
+					categories: true,
+					tags: true,
+					formFieldValues: true,
+				},
+			});
+
+		return document;
 	},
-	updateDocumentById: (id, data) => {
-		return { message: "Document updated." };
+	updateDocumentById: async (id, data) => {
+		const updatedDocument =
+			await databaseClient.document.update({
+				where: { id },
+				data: {
+					name: data.name,
+					categories: {
+						connectOrCreate: data.categories.map(
+							(category) => ({
+								where: { name: category.id },
+								create: { name: category.name },
+							})
+						),
+					},
+					tags: {
+						connectOrCreate: data.tags.map(
+							(tag) => ({
+								where: { name: tag.id },
+								create: { name: tag.name },
+							})
+						),
+					},
+
+					formFieldValues: {
+						create: data.formFieldValues.map(
+							(fieldValue) => ({
+								connect: {
+									formFieldLabel:
+										fieldValue.formFieldId,
+								},
+								value: fieldValue.value,
+							})
+						),
+					},
+				},
+			});
+
+		return updatedDocument;
 	},
-	deleteDocumentById: (id) => {
-		return { message: "Document deleted." };
+	deleteDocumentById: async (id) => {
+		const deletedDocument =
+			await databaseClient.document.delete({
+				where: { id },
+			});
+
+		return deletedDocument;
 	},
 	getAllDocuments: () => {
-		return { message: "Documents retrieved." };
+		const documents =
+			databaseClient.document.findMany({
+				include: {
+					categories: true,
+					tags: true,
+					formFieldValues: true,
+				},
+			});
 	},
 	deleteDocuments: (ids) => {
-		return { message: "Documents deleted." };
+		const deletedDocuments =
+			databaseClient.document.deleteMany({
+				where: {
+					id: {
+						in: ids,
+					},
+				},
+			});
+
+		return deletedDocuments;
 	},
 };
