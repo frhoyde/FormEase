@@ -13,12 +13,12 @@ export const storageController = {
 		}
 	},
 
-	getDocument: (req, res) => {
+	getDocument: async (req, res) => {
 		try {
 			const id = req.params.id;
 
 			const doc =
-				documentService.getDocumentById(id);
+				await documentService.getDocumentById(id);
 
 			return res.status(200).json(doc);
 		} catch (error) {
@@ -26,12 +26,12 @@ export const storageController = {
 		}
 	},
 
-	updateDocument: (req, res) => {
+	updateDocument: async (req, res) => {
 		try {
 			const id = req.params.id;
 			const data = req.body;
 			const doc =
-				documentService.updateDocumentById(
+				await documentService.updateDocumentById(
 					id,
 					data
 				);
@@ -42,11 +42,13 @@ export const storageController = {
 		}
 	},
 
-	deleteDocument: (req, res) => {
+	deleteDocument: async (req, res) => {
 		try {
 			const id = req.params.id;
 			const doc =
-				documentService.deleteDocumentById(id);
+				await documentService.deleteDocumentById(
+					id
+				);
 
 			return res.status(200).json(doc);
 		} catch (error) {
@@ -54,10 +56,10 @@ export const storageController = {
 		}
 	},
 
-	getDocuments: (req, res) => {
+	getDocuments: async (req, res) => {
 		try {
 			const docs =
-				documentService.getAllDocuments();
+				await documentService.getAllDocuments();
 
 			return res.status(200).json(docs);
 		} catch (error) {
@@ -65,8 +67,16 @@ export const storageController = {
 		}
 	},
 
-	deleteDocumentBulk: (req, res) => {
+	deleteDocumentBulk: async (req, res) => {
 		try {
+			const { ids } = req.body;
+
+			const docs =
+				await documentService.deleteDocumentsBulk(
+					ids
+				);
+
+			return res.status(200).json(docs);
 		} catch (error) {
 			throw new Error(error);
 		}

@@ -12,52 +12,52 @@ export const formController = {
 		}
 	},
 
-	getForm: (req, res) => {
+	getForm: async (req, res) => {
 		try {
 			const id = req.params.id;
 			const form =
-				formService.getFormTemplateById(id);
+				await formService.getFormTemplateById(id);
 			return res.status(200).json(form);
 		} catch (error) {
 			throw new Error(error);
 		}
 	},
 
-	getCategries: (req, res) => {
+	getCategries: async (req, res) => {
 		try {
 			const categories =
-				formService.getAllCategories();
+				await formService.getAllCategories();
 			return res.status(200).json(categories);
 		} catch (error) {
 			throw new Error(error);
 		}
 	},
 
-	getTags: (req, res) => {
+	getTags: async (req, res) => {
 		try {
-			const tags = formService.getAllTags();
+			const tags = await formService.getAllTags();
 			return res.status(200).json(tags);
 		} catch (error) {
 			throw new Error(error);
 		}
 	},
 
-	getForms: (req, res) => {
+	getForms: async (req, res) => {
 		try {
 			const forms =
-				formService.getAllFormTemplates();
+				await formService.getAllFormTemplates();
 			return res.status(200).json(forms);
 		} catch (error) {
 			throw new Error(error);
 		}
 	},
 
-	updateForm: (req, res) => {
+	updateForm: async (req, res) => {
 		try {
 			const id = req.params.id;
 			const data = req.body;
 			const form =
-				formService.updateFormTemplateById(
+				await formService.updateFormTemplateById(
 					id,
 					data
 				);
@@ -67,22 +67,26 @@ export const formController = {
 		}
 	},
 
-	deleteForm: (req, res) => {
+	deleteForm: async (req, res) => {
 		try {
 			const id = req.params.id;
 			const form =
-				formService.deleteFormTemplateById(id);
+				await formService.deleteFormTemplateById(
+					id
+				);
 			return res.status(200).json(form);
 		} catch (error) {
 			throw new Error(error);
 		}
 	},
 
-	deleteForms: (req, res) => {
+	deleteForms: async (req, res) => {
 		try {
 			const ids = req.body.ids;
 			const forms =
-				formService.deleteFormTemplatesBulk(ids);
+				await formService.deleteFormTemplatesBulk(
+					ids
+				);
 			return res.status(200).json(forms);
 		} catch (error) {
 			throw new Error(error);

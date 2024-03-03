@@ -99,9 +99,9 @@ export const documentService = {
 
 		return deletedDocument;
 	},
-	getAllDocuments: () => {
+	getAllDocuments: async () => {
 		const documents =
-			databaseClient.document.findMany({
+			await databaseClient.document.findMany({
 				include: {
 					categories: true,
 					tags: true,
@@ -109,9 +109,9 @@ export const documentService = {
 				},
 			});
 	},
-	deleteDocuments: (ids) => {
+	deleteDocuments: async (ids) => {
 		const deletedDocuments =
-			databaseClient.document.deleteMany({
+			await databaseClient.document.deleteMany({
 				where: {
 					id: {
 						in: ids,

@@ -1,37 +1,57 @@
-app.post("/register", function (req, res) {
-	User.register(
-		new User({
-			email: req.body.email,
-			username: req.body.username,
-		}),
-		req.body.password,
-		function (err, msg) {
-			if (err) {
-				res.send(err);
-			} else {
-				res.send({ message: "Successful" });
+import passport from "passport";
+import { authService } from "./auth.service.js";
+import { userService } from "../user/user.service.js";
+export const authController = {
+	register: async (req, res) => {
+		try {
+			const user = req.body;
+			const userExists =
+				await userService.getUserByEmail(
+					user.email
+				);
+
+			if (userExists) {
+				return res.status(400).json({
+					message: "User already exists",
+				});
 			}
+
+			const newUser =
+				await authService.register(user);
+
+			return res.status(201).json(newUser);
+		} catch (error) {
+			throw new Error(error);
 		}
-	);
-});
+	},
 
-app.post(
-	"/login",
-	passport.authenticate("local", {
-		failureRedirect: "/login-failure",
-		successRedirect: "/login-success",
-	}),
-	(err, req, res, next) => {
-		if (err) next(err);
-	}
-);
+	login: (req, res, next) => {
+		passport.authenticate(
+			"local",
+			(err, user, info) => {
+				if (err) {
+					return next(err);
+				}
+				if (!user) {
+					return res.status(401).json({
+						message: "Invalid credentials",
+					});
+				}
+				req.logIn(user, (err) => {
+					if (err) {
+						return next(err);
+					}
+					return res.json({
+						message: "Login successful",
+						user,
+					});
+				});
+			}
+		)(req, res, next);
+	},
 
-app.get("/login-failure", (req, res, next) => {
-	console.log(req.session);
-	res.send("Login Attempt Failed.");
-});
-
-app.get("/login-success", (req, res, next) => {
-	console.log(req.session);
-	res.send("Login Attempt was successful.");
-});
+	logout: (req, res) => {
+		req.logout();
+		res.json({ message: "Logout successful" });
+	},
+};
