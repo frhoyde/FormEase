@@ -3,7 +3,9 @@ export const formController = {
 		try {
 			const data = req.body;
 			const form =
-				await formService.createForm(data);
+				await formService.createFormTemplate(
+					data
+				);
 			return res.status(201).json(form);
 		} catch (error) {
 			throw new Error(error);
@@ -13,8 +15,28 @@ export const formController = {
 	getForm: (req, res) => {
 		try {
 			const id = req.params.id;
-			const form = formService.getFormById(id);
+			const form =
+				formService.getFormTemplateById(id);
 			return res.status(200).json(form);
+		} catch (error) {
+			throw new Error(error);
+		}
+	},
+
+	getCategries: (req, res) => {
+		try {
+			const categories =
+				formService.getAllCategories();
+			return res.status(200).json(categories);
+		} catch (error) {
+			throw new Error(error);
+		}
+	},
+
+	getTags: (req, res) => {
+		try {
+			const tags = formService.getAllTags();
+			return res.status(200).json(tags);
 		} catch (error) {
 			throw new Error(error);
 		}
@@ -22,7 +44,8 @@ export const formController = {
 
 	getForms: (req, res) => {
 		try {
-			const forms = formService.getAllForms();
+			const forms =
+				formService.getAllFormTemplates();
 			return res.status(200).json(forms);
 		} catch (error) {
 			throw new Error(error);
@@ -33,10 +56,11 @@ export const formController = {
 		try {
 			const id = req.params.id;
 			const data = req.body;
-			const form = formService.updateFormById(
-				id,
-				data
-			);
+			const form =
+				formService.updateFormTemplateById(
+					id,
+					data
+				);
 			return res.status(200).json(form);
 		} catch (error) {
 			throw new Error(error);
@@ -46,7 +70,8 @@ export const formController = {
 	deleteForm: (req, res) => {
 		try {
 			const id = req.params.id;
-			const form = formService.deleteFormById(id);
+			const form =
+				formService.deleteFormTemplateById(id);
 			return res.status(200).json(form);
 		} catch (error) {
 			throw new Error(error);
@@ -57,7 +82,7 @@ export const formController = {
 		try {
 			const ids = req.body.ids;
 			const forms =
-				formService.deleteFormBulk(ids);
+				formService.deleteFormTemplatesBulk(ids);
 			return res.status(200).json(forms);
 		} catch (error) {
 			throw new Error(error);

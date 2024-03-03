@@ -13,9 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  email     String      @unique
+  password  String
+  name      String?
+  Documnent Documnent[]
+}
+
 model FormTemplate {
-  id              String           @id @default(auto()) @map("_id") @db.ObjectId
-  name            String           @unique
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+
+  categories Category[]
+  tags       Tag[]
+
   formFieldGroups FormFieldGroup[]
 }
 
@@ -25,7 +37,7 @@ model FormFieldGroup {
   order      Int
 
   formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
-  formTemplateId String
+  formTemplateId String       @db.ObjectId
 }
 
 model FormFieldType {
@@ -63,4 +75,34 @@ model AllowedFormFieldValue {
 
   formFieldLabel FormFieldLabel @relation(fields: [formFieldId], references: [id])
   formFieldId    String         @db.ObjectId
+  Documnent      Documnent?     @relation(fields: [documnentId], references: [id])
+  documnentId    String?        @db.ObjectId
+}
+
+model Documnent {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  categories Category[]
+  tags       Tag[]
+
+  formFieldValues AllowedFormFieldValue[]
+  User            User?                   @relation(fields: [userId], references: [id])
+  userId          String?                 @db.ObjectId
+}
+
+model Category {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  Documnent      Documnent?    @relation(fields: [documnentId], references: [id])
+  documnentId    String?       @db.ObjectId
+  FormTemplate   FormTemplate? @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String?       @db.ObjectId
+}
+
+model Tag {
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  Documnent      Documnent?    @relation(fields: [documnentId], references: [id])
+  documnentId    String?       @db.ObjectId
+  FormTemplate   FormTemplate? @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String?       @db.ObjectId
 }

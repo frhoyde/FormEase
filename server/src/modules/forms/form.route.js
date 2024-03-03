@@ -9,6 +9,16 @@ formRouter.get(
 	formController.getForms
 );
 
+formRouter.get(
+	"/categories/get",
+	formController.getCategories
+);
+
+formRouter.get(
+	"/tags/get",
+	formController.getTags
+);
+
 formRouter.post(
 	"/create",
 	formController.createForm
