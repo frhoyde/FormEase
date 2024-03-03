@@ -9,6 +9,58 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
+}
+
+model FormTemplate {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  name            String           @unique
+  formFieldGroups FormFieldGroup[]
+}
+
+model FormFieldGroup {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  formFields FormField[]
+  order      Int
+
+  formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
+  formTemplateId String
+}
+
+model FormFieldType {
+  id        String      @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  FormField FormField[]
+}
+
+model FormField {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  order Int
+
+  formFieldGroup   FormFieldGroup @relation(fields: [formFieldGroupId], references: [id])
+  formFieldGroupId String         @db.ObjectId
+
+  formFieldType   FormFieldType @relation(fields: [formFieldTypeId], references: [id])
+  formFieldTypeId String        @db.ObjectId
+
+  formFieldLabel   FormFieldLabel @relation(fields: [formFieldLabelId], references: [id])
+  formFieldLabelId String         @unique @db.ObjectId
+}
+
+model FormFieldLabel {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  formField FormField?
+
+  allowedFormFieldValues AllowedFormFieldValue[]
+}
+
+model AllowedFormFieldValue {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  value String
+
+  formFieldLabel FormFieldLabel @relation(fields: [formFieldId], references: [id])
+  formFieldId    String         @db.ObjectId
 }
