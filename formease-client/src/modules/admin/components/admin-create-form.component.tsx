@@ -5,7 +5,6 @@ import {
 	checkTemplate,
 } from "@pdfme/common";
 
-import { generate } from "@pdfme/generator";
 import {
 	getTemplate,
 	readFile,
@@ -50,7 +49,6 @@ export const AdminCreateFormComponent = () => {
 	const onChangeBasePDF = (
 		e: React.ChangeEvent<HTMLInputElement>
 	) => {
-		console.log("askldj");
 		if (e.target && e.target.files) {
 			readFile(e.target.files[0], "dataURL").then(
 				async (basePdf) => {
@@ -82,36 +80,14 @@ export const AdminCreateFormComponent = () => {
 						designer.current.getTemplate()
 				)
 			);
-			alert("Saved!");
-		}
-	};
-
-	const onGeneratePDF = async () => {
-		if (designer.current) {
-			const template =
-				designer.current.getTemplate();
-			const inputs = template.sampledata ?? [];
-			const pdf = await generate({
-				template,
-				inputs,
-			});
-			const blob = new Blob([pdf.buffer], {
-				type: "application/pdf",
-			});
-			window.open(URL.createObjectURL(blob));
+			// make api call to db
 		}
 	};
 
 	return (
 		<div>
-			<header
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-				}}
-			>
-				<label style={{ width: 180 }}>
+			<header className="w-screen flex justify-end p-4 bg-black shadow-md">
+				<label>
 					Change PDF
 					<input
 						type="file"
@@ -119,9 +95,6 @@ export const AdminCreateFormComponent = () => {
 						onChange={onChangeBasePDF}
 					/>
 				</label>
-				<button onClick={onGeneratePDF}>
-					Generate PDF
-				</button>
 			</header>
 			<div ref={designerRef} />
 		</div>

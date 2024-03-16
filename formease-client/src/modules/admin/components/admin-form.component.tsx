@@ -7,6 +7,7 @@ import { Form, Viewer } from "@pdfme/ui";
 import { Template } from "@pdfme/common";
 import { checkTemplate } from "@pdfme/common";
 import { getTemplate } from "@/utils/helpers";
+import { Button } from "@/components/ui/button";
 
 type Mode = "form" | "viewer";
 
@@ -51,46 +52,8 @@ export const AdminFormComponent = () => {
 		};
 	}, [uiRef, mode]);
 
-	const onChangeMode = (
-		e: React.ChangeEvent<HTMLInputElement>
-	) => {
-		const value = e.target.value as Mode;
-		setMode(value);
-		localStorage.setItem("mode", value);
-	};
-
 	return (
 		<div>
-			<header
-				style={{
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "space-between",
-				}}
-			>
-				<strong>Form, Viewer</strong>
-				<span style={{ margin: "0 1rem" }}>
-					:
-				</span>
-				<div>
-					<input
-						type="radio"
-						onChange={onChangeMode}
-						id="form"
-						value="form"
-						checked={mode === "form"}
-					/>
-					<label htmlFor="form">Form</label>
-					<input
-						type="radio"
-						onChange={onChangeMode}
-						id="viewer"
-						value="viewer"
-						checked={mode === "viewer"}
-					/>
-					<label htmlFor="viewer">Viewer</label>
-				</div>
-			</header>
 			<div ref={uiRef} />
 		</div>
 	);
