@@ -110,11 +110,7 @@ export const AdminCreateFormComponent = () => {
 			</header>
 
 			<Dialog>
-				<DialogTrigger asChild>
-					<Button variant="outline">
-						Edit Profile
-					</Button>
-				</DialogTrigger>
+				<DialogTrigger asChild></DialogTrigger>
 				<DialogContent className="sm:max-w-[425px]">
 					<DialogHeader>
 						<DialogTitle>
