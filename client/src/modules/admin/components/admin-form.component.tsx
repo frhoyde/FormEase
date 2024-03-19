@@ -7,6 +7,20 @@ import { Form, Viewer } from "@pdfme/ui";
 import { Template } from "@pdfme/common";
 import { checkTemplate } from "@pdfme/common";
 import { getTemplate } from "@/utils/helpers";
+import { Toggle } from "@/components/ui/toggle";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { generate } from "@pdfme/generator";
 
 type Mode = "form" | "viewer";
 
@@ -67,7 +81,21 @@ export const AdminFormComponent = () => {
 
 	return (
 		<div>
-			<div ref={uiRef} />
+			<div className="flex items-center space-x-4 text-sm">
+				<Toggle aria-label="Toggle">
+					Preview
+				</Toggle>
+				<Separator orientation="vertical" />
+				<Button>Save as Doc</Button>
+				<Separator orientation="vertical" />
+				<Button onClick={onGeneratePDF}>
+					Download PDF
+				</Button>
+			</div>
+			<div
+				ref={uiRef}
+				className="mt-5"
+			/>
 		</div>
 	);
 };

@@ -21,7 +21,6 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
 
@@ -100,15 +99,7 @@ export const AdminCreateFormComponent = () => {
 
 	return (
 		<div className="w-full">
-			<div className="flex h-5 items-center space-x-4 text-sm">
-				<Toggle aria-label="Toggle">
-					Preview
-				</Toggle>
-				<Separator orientation="vertical" />
-				<Button>Save as Doc</Button>
-				<Separator orientation="vertical" />
-				<Button>Download PDF</Button>
-				<Separator orientation="vertical" />
+			<div className="flex items-center space-x-4 text-sm">
 				<Dialog>
 					<DialogTrigger asChild>
 						<Button>Change PDF</Button>
@@ -131,7 +122,10 @@ export const AdminCreateFormComponent = () => {
 					</DialogContent>
 				</Dialog>
 			</div>
-			<div ref={designerRef} />
+			<div
+				ref={designerRef}
+				className="mt-5"
+			/>
 		</div>
 	);
 };
