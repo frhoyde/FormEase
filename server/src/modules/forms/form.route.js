@@ -1,8 +1,8 @@
 import { Router } from "express";
 
-import formController from "./form.controller.js";
+import { formController } from "./form.controller.js";
 
-const formRouter = Router();
+export const formRouter = Router();
 
 formRouter.get(
 	"/all/get",
@@ -10,12 +10,12 @@ formRouter.get(
 );
 
 formRouter.get(
-	"/categories/get",
+	"/category/get",
 	formController.getCategories
 );
 
 formRouter.get(
-	"/tags/get",
+	"/tag/get",
 	formController.getTags
 );
 
@@ -43,5 +43,3 @@ formRouter.delete(
 	"/delete",
 	formController.deleteForms
 );
-
-export default formRouter;

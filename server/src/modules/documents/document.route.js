@@ -1,6 +1,6 @@
 import { Router } from "express";
-import documentController from "./document.controller.js";
-const documentRouter = Router();
+import { documentController } from "./document.controller.js";
+export const documentRouter = Router();
 
 documentRouter.get(
 	"/all/get",
@@ -31,5 +31,3 @@ documentRouter.delete(
 	"/delete",
 	documentController.deleteDocuments
 );
-
-export default documentRouter;

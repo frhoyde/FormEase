@@ -10,17 +10,10 @@ import { getTemplate } from "@/utils/helpers";
 import { Toggle } from "@/components/ui/toggle";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { generate } from "@pdfme/generator";
+import Creatable from "react-select/creatable";
+import { Label } from "@/components/ui/label";
+import axios from "axios";
 
 type Mode = "form" | "viewer";
 
@@ -34,6 +27,25 @@ export const AdminFormComponent = () => {
 		(localStorage.getItem("mode") as Mode) ??
 			"form"
 	);
+
+	const [tags, setTags] = useState<
+		{ id: string; name: string }[]
+	>([]);
+	const [categories, setCategories] = useState<
+		{ id: string; name: string }[]
+	>([]);
+
+	const [selectedTags, setSelectedTags] =
+		useState<
+			readonly { value: string; label: string }[]
+		>([]);
+
+	const [
+		selectedCategories,
+		setSelectedCategories,
+	] = useState<
+		readonly { value: string; label: string }[]
+	>([]);
 
 	const onGeneratePDF = async () => {
 		if (ui.current) {
@@ -49,6 +61,22 @@ export const AdminFormComponent = () => {
 			window.open(URL.createObjectURL(blob));
 		}
 	};
+
+	const OnSaveAsDoc = async () => {
+		if (ui.current) {
+			const inputs = ui.current.getInputs();
+			axios.post("/document/create", {
+				inputs,
+				tags: selectedTags.map(
+					(tag) => tag.value
+				),
+				categories: selectedCategories.map(
+					(category) => category.value
+				),
+			});
+		}
+	};
+
 	useEffect(() => {
 		if (uiRef.current) {
 			let template: Template = getTemplate();
@@ -79,6 +107,28 @@ export const AdminFormComponent = () => {
 		};
 	}, [uiRef, mode]);
 
+	useEffect(() => {
+		axios
+			.get("form/tags/get")
+			.then((response) => {
+				setTags(response.data);
+			})
+			.catch((error) => {
+				setTags([]);
+				throw error;
+			});
+
+		axios
+			.get("form/category/get")
+			.then((response) => {
+				setCategories(response.data);
+			})
+			.catch((error) => {
+				setCategories([]);
+				throw error;
+			});
+	}, []);
+
 	return (
 		<div>
 			<div className="flex items-center space-x-4 text-sm">
@@ -91,6 +141,32 @@ export const AdminFormComponent = () => {
 				<Button onClick={onGeneratePDF}>
 					Download PDF
 				</Button>
+				<Separator orientation="vertical" />
+				<Label>Tags</Label>
+				<Creatable
+					options={tags.map((tag) => ({
+						value: tag.id,
+						label: tag.name,
+					}))}
+					isClearable
+					isMulti
+					onChange={(e) => {
+						setSelectedTags(e);
+					}}
+				/>
+				<Separator orientation="vertical" />
+				<Label>Categories</Label>
+				<Creatable
+					options={categories.map((category) => ({
+						value: category.id,
+						label: category.name,
+					}))}
+					isClearable
+					isMulti
+					onChange={(e) => {
+						setSelectedCategories(e);
+					}}
+				/>
 			</div>
 			<div
 				ref={uiRef}

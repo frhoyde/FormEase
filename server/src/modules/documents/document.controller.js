@@ -1,4 +1,4 @@
-export const storageController = {
+export const documentController = {
 	createDocument: async (req, res) => {
 		try {
 			const data = req.body;

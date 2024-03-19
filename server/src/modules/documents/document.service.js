@@ -22,18 +22,7 @@ export const documentService = {
 							})
 						),
 					},
-
-					formFieldValues: {
-						create: document.formFieldValues.map(
-							(fieldValue) => ({
-								connect: {
-									formFieldLabel:
-										fieldValue.formFieldId,
-								},
-								value: fieldValue.value,
-							})
-						),
-					},
+					data: document.data,
 				},
 			});
 

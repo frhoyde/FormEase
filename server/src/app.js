@@ -6,6 +6,8 @@ import passport from "passport";
 import LocalStrategy from "passport-local";
 import argon2 from "argon2";
 import { env } from "./config.js";
+import { documentRouter } from "./modules/documents/document.route.js";
+import { formRouter } from "./modules/forms/form.route.js";
 // Router imports
 
 import { config } from "dotenv";
@@ -74,5 +76,8 @@ app.get("/are-you-ok", (req, res) => {
 		.status(200)
 		.send({ message: "Yeah, I am OK." });
 });
+
+app.use("/docs", documentRouter);
+app.use("/forms", formRouter);
 
 export default app;

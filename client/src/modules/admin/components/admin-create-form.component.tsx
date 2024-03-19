@@ -1,5 +1,7 @@
+import axios from "axios";
 import { useEffect, useRef } from "react";
 import { Designer } from "@pdfme/ui";
+import Creatable from "react-select/creatable";
 import {
 	Template,
 	checkTemplate,
@@ -93,7 +95,27 @@ export const AdminCreateFormComponent = () => {
 						designer.current.getTemplate()
 				)
 			);
-			// make api call to db
+			axios({
+				method: "post",
+				url: "/create",
+				data: {
+					name: "template",
+					categories: ["template"],
+					tags: ["template"],
+					schema:
+						designer.current.getTemplate()
+							.schemas,
+					basePdf:
+						designer.current.getTemplate()
+							.basePdf,
+					sampledata:
+						designer.current.getTemplate()
+							.sampledata,
+					columns:
+						designer.current.getTemplate()
+							.columns,
+				},
+			});
 		}
 	};
 
