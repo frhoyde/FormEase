@@ -21,32 +21,10 @@ export const formService = {
 								create: { name: tag.name },
 							})),
 					},
-
-					formFieldGroups: {
-						create:
-							formTemplate.formFieldGroups.map(
-								(group) => ({
-									name: group.name,
-									formFields: {
-										create: group.formFields.map(
-											(field) => ({
-												name: field.name,
-												type: field.type,
-												required: field.required,
-												options: {
-													create:
-														field.options.map(
-															(option) => ({
-																name: option.name,
-															})
-														),
-												},
-											})
-										),
-									},
-								})
-							),
-					},
+					schema: formTemplate.schema,
+					basePdf: formTemplate.basePdf,
+					sampledata: formTemplate.sampledata,
+					columns: formTemplate.columns,
 				},
 			});
 	},
@@ -58,15 +36,10 @@ export const formService = {
 				include: {
 					categories: true,
 					tags: true,
-					formFieldGroups: {
-						include: {
-							formFields: {
-								include: {
-									options: true,
-								},
-							},
-						},
-					},
+					schema: true,
+					basePdf: true,
+					sampledata: true,
+					columns: true,
 				},
 			});
 
@@ -116,29 +89,10 @@ export const formService = {
 							})
 						),
 					},
-					formFieldGroups: {
-						create: data.formFieldGroups.map(
-							(group) => ({
-								name: group.name,
-								formFields: {
-									create: group.formFields.map(
-										(field) => ({
-											name: field.name,
-											type: field.type,
-											required: field.required,
-											options: {
-												create: field.options.map(
-													(option) => ({
-														name: option.name,
-													})
-												),
-											},
-										})
-									),
-								},
-							})
-						),
-					},
+					schema: data.schema,
+					basePdf: data.basePdf,
+					sampledata: data.sampledata,
+					columns: data.columns,
 				},
 			});
 
@@ -158,15 +112,10 @@ export const formService = {
 				include: {
 					categories: true,
 					tags: true,
-					formFieldGroups: {
-						include: {
-							formFields: {
-								include: {
-									options: true,
-								},
-							},
-						},
-					},
+					schema: true,
+					basePdf: true,
+					sampledata: true,
+					columns: true,
 				},
 			});
 

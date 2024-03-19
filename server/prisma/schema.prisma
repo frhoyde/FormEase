@@ -27,56 +27,11 @@ model FormTemplate {
 
   categories Category[]
   tags       Tag[]
-
-  formFieldGroups FormFieldGroup[]
-}
-
-model FormFieldGroup {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  formFields FormField[]
-  order      Int
-
-  formTemplate   FormTemplate @relation(fields: [formTemplateId], references: [id])
-  formTemplateId String       @db.ObjectId
-}
-
-model FormFieldType {
-  id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  formField FormField[]
-}
-
-model FormField {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  order Int
-
-  formFieldGroup   FormFieldGroup @relation(fields: [formFieldGroupId], references: [id])
-  formFieldGroupId String         @db.ObjectId
-
-  formFieldType   FormFieldType @relation(fields: [formFieldTypeId], references: [id])
-  formFieldTypeId String        @db.ObjectId
-
-  formFieldLabel   FormFieldLabel @relation(fields: [formFieldLabelId], references: [id])
-  formFieldLabelId String         @unique @db.ObjectId
-}
-
-model FormFieldLabel {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-
-  formField FormField?
-
-  allowedFormFieldValues AllowedFormFieldValue[]
-}
-
-model AllowedFormFieldValue {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  value String
-
-  formFieldLabel FormFieldLabel @relation(fields: [formFieldId], references: [id])
-  formFieldId    String         @db.ObjectId
-  document       Document?      @relation(fields: [documnentId], references: [id])
-  documnentId    String?        @db.ObjectId
+  schema     Json
+  basePdf    String
+  sampledata Json
+  columns    String[]
+  document   Document[]
 }
 
 model Document {
@@ -84,9 +39,11 @@ model Document {
   categories Category[]
   tags       Tag[]
 
-  formFieldValues AllowedFormFieldValue[]
-  user            User?                   @relation(fields: [userId], references: [id])
-  userId          String?                 @db.ObjectId
+  template   FormTemplate? @relation(fields: [templateId], references: [id])
+  templateId String?       @db.ObjectId
+  data       Json
+  user       User?         @relation(fields: [userId], references: [id])
+  userId     String?       @db.ObjectId
 }
 
 model Category {
@@ -103,6 +60,6 @@ model Tag {
   name           String
   documnent      Document?     @relation(fields: [documnentId], references: [id])
   documnentId    String?       @db.ObjectId
-  FormTemplate   FormTemplate? @relation(fields: [formTemplateId], references: [id])
+  formTemplate   FormTemplate? @relation(fields: [formTemplateId], references: [id])
   formTemplateId String?       @db.ObjectId
 }
