@@ -2,7 +2,12 @@ import {
 	checkTemplate,
 	Template,
 } from "@pdfme/common";
-
+import plugins from "./plugins";
+import {
+	text,
+	barcodes,
+	image,
+} from "@pdfme/schemas";
 export const readFile = (
 	file: File | null,
 	type: "text" | "dataURL" | "arrayBuffer"
@@ -31,6 +36,15 @@ export const readFile = (
 			}
 		}
 	);
+};
+
+export const getPlugins = () => {
+	return {
+		Text: text,
+		Signature: plugins.signature,
+		QR: barcodes.qrcode,
+		Image: image,
+	};
 };
 
 export const cloneDeep = (obj: any) =>

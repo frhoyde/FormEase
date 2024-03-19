@@ -9,7 +9,7 @@ export const formService = {
 						connectOrCreate:
 							formTemplate.categories.map(
 								(category) => ({
-									where: { name: category.id },
+									where: { id: category.id },
 									create: { name: category.name },
 								})
 							),
@@ -17,7 +17,7 @@ export const formService = {
 					tags: {
 						connectOrCreate:
 							formTemplate.tags.map((tag) => ({
-								where: { name: tag.id },
+								where: { id: tag.id },
 								create: { name: tag.name },
 							})),
 					},
@@ -64,6 +64,7 @@ export const formService = {
 				id: true,
 			},
 		});
+
 		return tags;
 	},
 

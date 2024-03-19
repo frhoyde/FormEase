@@ -14,6 +14,7 @@ import { generate } from "@pdfme/generator";
 import Creatable from "react-select/creatable";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
+import { Switch } from "@/components/ui/switch";
 
 type Mode = "form" | "viewer";
 
@@ -23,10 +24,7 @@ export const AdminFormComponent = () => {
 	);
 	const ui = useRef<Form | Viewer | null>(null);
 
-	const [mode, setMode] = useState<Mode>(
-		(localStorage.getItem("mode") as Mode) ??
-			"form"
-	);
+	const [mode, setMode] = useState<Mode>("form");
 
 	const [tags, setTags] = useState<
 		{ id: string; name: string }[]
@@ -46,6 +44,9 @@ export const AdminFormComponent = () => {
 	] = useState<
 		readonly { value: string; label: string }[]
 	>([]);
+
+	const [template, setTemplate] =
+		useState<Template>(getTemplate());
 
 	const onGeneratePDF = async () => {
 		if (ui.current) {
@@ -109,7 +110,7 @@ export const AdminFormComponent = () => {
 
 	useEffect(() => {
 		axios
-			.get("form/tags/get")
+			.get("form/tag/get")
 			.then((response) => {
 				setTags(response.data);
 			})
@@ -132,11 +133,17 @@ export const AdminFormComponent = () => {
 	return (
 		<div>
 			<div className="flex items-center space-x-4 text-sm">
-				<Toggle aria-label="Toggle">
-					Preview
-				</Toggle>
+				<Switch
+					id="Preview"
+					onCheckedChange={(checked) => {
+						setMode(checked ? "viewer" : "form");
+					}}
+				/>
+				<Label htmlFor="Preview">Preview</Label>
 				<Separator orientation="vertical" />
-				<Button>Save as Doc</Button>
+				<Button onClick={OnSaveAsDoc}>
+					Save as Doc
+				</Button>
 				<Separator orientation="vertical" />
 				<Button onClick={onGeneratePDF}>
 					Download PDF

@@ -78,6 +78,6 @@ app.get("/are-you-ok", (req, res) => {
 });
 
 app.use("/docs", documentRouter);
-app.use("/forms", formRouter);
+app.use("/form", formRouter);
 
 export default app;

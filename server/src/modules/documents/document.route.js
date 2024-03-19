@@ -29,5 +29,5 @@ documentRouter.delete(
 
 documentRouter.delete(
 	"/delete",
-	documentController.deleteDocuments
+	documentController.deleteDocumentBulk
 );

@@ -1,3 +1,4 @@
+import { formService } from "./form.service.js";
 export const formController = {
 	createForm: async (req, res) => {
 		try {
@@ -23,7 +24,7 @@ export const formController = {
 		}
 	},
 
-	getCategries: async (req, res) => {
+	getCategories: async (req, res) => {
 		try {
 			const categories =
 				await formService.getAllCategories();

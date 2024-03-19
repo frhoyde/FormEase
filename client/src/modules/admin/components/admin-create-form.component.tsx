@@ -1,5 +1,10 @@
 import axios from "axios";
-import { useEffect, useRef } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import { text, image } from "@pdfme/schemas";
 import { Designer } from "@pdfme/ui";
 import Creatable from "react-select/creatable";
 import {
@@ -11,6 +16,7 @@ import {
 	getTemplate,
 	readFile,
 	cloneDeep,
+	getPlugins,
 } from "@/utils/helpers";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,14 +29,34 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Toggle } from "@/components/ui/toggle";
 import { Separator } from "@/components/ui/separator";
+import { Label } from "@/components/ui/label";
 
 export const AdminCreateFormComponent = () => {
 	const designerRef =
 		useRef<HTMLDivElement | null>(null);
 	const designer = useRef<Designer | null>(null);
 
+	const [tags, setTags] = useState<
+		{ id: string; name: string }[]
+	>([]);
+	const [categories, setCategories] = useState<
+		{ id: string; name: string }[]
+	>([]);
+
+	const [selectedTags, setSelectedTags] =
+		useState<
+			readonly { value: string; label: string }[]
+		>([]);
+
+	const [
+		selectedCategories,
+		setSelectedCategories,
+	] = useState<
+		readonly { value: string; label: string }[]
+	>([]);
+
+	const [name, setName] = useState<string>("");
 	useEffect(() => {
 		if (designerRef.current) {
 			let template: Template = getTemplate();
@@ -49,6 +75,7 @@ export const AdminCreateFormComponent = () => {
 			designer.current = new Designer({
 				domContainer: designerRef.current,
 				template,
+				plugins: getPlugins(),
 			});
 			designer.current.onSaveTemplate(
 				onSaveTemplate
@@ -84,24 +111,20 @@ export const AdminCreateFormComponent = () => {
 		}
 	};
 
-	const onSaveTemplate = (
-		template?: Template
-	) => {
+	const onSaveTemplate = () => {
 		if (designer.current) {
-			localStorage.setItem(
-				"template",
-				JSON.stringify(
-					template ||
-						designer.current.getTemplate()
-				)
-			);
 			axios({
 				method: "post",
-				url: "/create",
+				url: "form/create",
 				data: {
-					name: "template",
-					categories: ["template"],
-					tags: ["template"],
+					name: name,
+					categories: selectedCategories.map(
+						(category) => {
+							id: category.value;
+							name: category.label;
+						}
+					),
+					tags: selectedTags,
 					schema:
 						designer.current.getTemplate()
 							.schemas,
@@ -119,9 +142,40 @@ export const AdminCreateFormComponent = () => {
 		}
 	};
 
+	useEffect(() => {
+		axios
+			.get("form/tag/get")
+			.then((response) => {
+				setTags(response.data);
+			})
+			.catch((error) => {
+				setTags([]);
+				throw error;
+			});
+
+		axios
+			.get("form/category/get")
+			.then((response) => {
+				setCategories(response.data);
+			})
+			.catch((error) => {
+				setCategories([]);
+				throw error;
+			});
+	}, []);
+
 	return (
 		<div className="w-full">
 			<div className="flex items-center space-x-4 text-sm">
+				<Label htmlFor="name">Name</Label>
+				<Input
+					id="name"
+					type="text"
+					className="w-50"
+					onChange={(e) => {
+						setName(e.target.value);
+					}}
+				/>
 				<Dialog>
 					<DialogTrigger asChild>
 						<Button>Change PDF</Button>
@@ -143,6 +197,37 @@ export const AdminCreateFormComponent = () => {
 						<DialogFooter></DialogFooter>
 					</DialogContent>
 				</Dialog>
+
+				<Separator orientation="vertical" />
+				<Label>Tags</Label>
+				<Creatable
+					options={tags.map((tag) => ({
+						value: tag.id,
+						label: tag.name,
+					}))}
+					isClearable
+					isMulti
+					onChange={(e) => {
+						setSelectedTags(e);
+					}}
+				/>
+				<Separator orientation="vertical" />
+				<Label>Categories</Label>
+				<Creatable
+					options={categories.map((category) => ({
+						value: category.id,
+						label: category.name,
+					}))}
+					isClearable
+					isMulti
+					onChange={(e) => {
+						setSelectedCategories(e);
+					}}
+				/>
+				<Separator orientation="vertical" />
+				<Button onClick={onSaveTemplate}>
+					Save Template
+				</Button>
 			</div>
 			<div
 				ref={designerRef}
